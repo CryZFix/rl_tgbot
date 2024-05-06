@@ -6,7 +6,15 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import DeleteWebhook
 
-import callbacks, commands
+import callbacks
+import commands
+import set_commands
+
+
+async def on_startup(bot: Bot):
+    await set_commands.force_reset_all_commands(bot)
+    await set_commands.set_chat_users_commands(bot)
+    await set_commands.set_chat_admins_commands(bot)
 
 
 async def main():
@@ -15,6 +23,7 @@ async def main():
         api=TelegramAPIServer.from_base('http://localhost:8081')
     )
     bot = Bot(token=os.environ['BOT_TOKEN'])
+    dp.startup.register(on_startup)
     dp.include_routers(
         commands.admin_command_router,
         callbacks.callback_router

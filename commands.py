@@ -65,8 +65,8 @@ async def ban_command(message: types.Message, bot: Bot, command: CommandObject) 
 async def mute_command(message: types.Message, bot: Bot, command: CommandObject):
     try:
         mute_time = int(command.args) if command.args else 5
-        if mute_time < 1:
-            mute_time = 1
+        mute_time = mute_time if mute_time > 1 else 1
+        mute_time = mute_time if mute_time < 300 else 300
         await bot.restrict_chat_member(
             chat_id=message.chat.id,
             user_id=message.reply_to_message.from_user.id,
@@ -105,8 +105,8 @@ async def mute_command(message: types.Message, bot: Bot, command: CommandObject)
 async def mute_command(message: types.Message, bot: Bot, command: CommandObject):
     try:
         mute_time = int(command.args) if command.args else 5
-        if mute_time < 1:
-            mute_time = 1
+        mute_time = mute_time if mute_time > 1 else 1
+        mute_time = mute_time if mute_time < 300 else 300
         await bot.restrict_chat_member(
             chat_id=message.chat.id,
             user_id=message.reply_to_message.from_user.id,
