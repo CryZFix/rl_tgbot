@@ -10,7 +10,7 @@ async def promo_process(callback_query: types.CallbackQuery, bot: Bot) -> None:
     user_id = callback_query.data.split("_")[1]
     await bot.unban_chat_member(
         chat_id=callback_query.message.chat.id,
-        user_id=user_id
+        user_id=int(user_id)
     )
     await callback_query.message.edit_reply_markup()
     await callback_query.message.edit_text("Пользователь разблокирован")

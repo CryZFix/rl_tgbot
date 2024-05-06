@@ -1,12 +1,12 @@
 import asyncio
 import os
 
-import commands, callbacks
-
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import DeleteWebhook
+
+import callbacks, commands
 
 
 async def main():
