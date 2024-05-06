@@ -12,8 +12,3 @@ async def cleaner(bot: Bot, chat_id: int, messages: list[int], timeout: int) -> 
         )
     except TelegramBadRequest as BadRequest:
         print(BadRequest)
-
-
-async def main():
-    await cleaner(bot=bot, chat_id=chat_id, messages=messages, timeout="sad")
-    
