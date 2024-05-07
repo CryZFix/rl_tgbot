@@ -1,8 +1,7 @@
-import asyncio
-
 from aiogram import Bot, F, Router, types
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import BaseFilter
+from aiogram.utils.formatting import Text, Bold
 
 from utils import db
 from utils.cleaner import cleaner
@@ -65,37 +64,43 @@ async def get_messages_count_stat(callback_query: types.CallbackQuery, bot: Bot)
     try:
         if callback_query.data == "s_all":
             result = await db.get_messages_stat()
-            text_message = "Топ 10 балоболов чата за все время\n\n"
+            text_message = Text("Топ 10 балоболов чата за все время\n\n")
         elif callback_query.data == "s_day":
             result = await db.get_messages_stat(period="day")
-            text_message = "Топ 10 балоболов чата за сегодня\n\n"
+            text_message = Text("Топ 10 балоболов чата за сегодня\n\n")
         elif callback_query.data == "s_week":
             result = await db.get_messages_stat(period="week")
-            text_message = "Топ 10 балоболов чата за неделю\n\n"
+            text_message = Text("Топ 10 балоболов чата за неделю\n\n")
         elif callback_query.data == "s_month":
             result = await db.get_messages_stat(period="month")
-            text_message = "Топ 10 балоболов чата за месяц\n\n"
+            text_message = Text("Топ 10 балоболов чата за месяц\n\n")
         else:
             return
         await bot.answer_callback_query(callback_query.id)
 
         for user in result:
-            text_message += f"<b>{user[1]}</b>, сообщений: {user[2]}\n"
+            text_message += Text(Bold(user[1]), " сообщений: ", user[2], "\n")
 
         if callback_query.from_user.id not in result:
             result = await db.get_me_messages_stat(user_id=callback_query.from_user.id, period=callback_query.data)
-            text_message += f"\n\nТоп вызвал <b>{callback_query.from_user.first_name}</b>, сообщений: {result[0]}"
+            text_message += Text(
+                "\n\nТоп вызвал ",
+                Bold(callback_query.from_user.first_name),
+                ", сообщений: ",
+                result[0]
+            )
 
         await bot.edit_message_text(
+            **text_message.as_kwargs(),
             chat_id=callback_query.message.chat.id,
             message_id=callback_query.message.message_id,
-            text=text_message
         )
 
-        await asyncio.sleep(60)
-        await bot.delete_message(
+        await cleaner(
+            bot=bot,
             chat_id=callback_query.message.chat.id,
-            message_id=callback_query.message.message_id
+            messages=[callback_query.message.message_id],
+            timeout=60
         )
     except TelegramBadRequest:
         pass

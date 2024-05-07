@@ -94,7 +94,7 @@ async def mute_command(message: types.Message, bot: Bot, command: CommandObject)
             "Администратор: ",
             TextMention(message.from_user.full_name, user=message.from_user)
         )
-        await bot.send_message(**content.as_kwargs(), disable_web_page_preview=True)
+        await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
     except AttributeError as AttrError:
         if not message.reply_to_message:
@@ -137,7 +137,7 @@ async def nomedia_command(message: types.Message, bot: Bot, command: CommandObje
             "Администратор: ",
             TextMention(message.from_user.full_name, user=message.from_user)
         )
-        await bot.send_message(**content.as_kwargs(), disable_web_page_preview=True)
+        await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
     except AttributeError as AttrError:
         if not message.reply_to_message:
