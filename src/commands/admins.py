@@ -64,7 +64,12 @@ async def ban_command(message: types.Message, bot: Bot, command: CommandObject) 
     except AttributeError:
         if not message.reply_to_message:
             attr_error = await message.reply(text="Команда должна быть вызвана в ответ на сообщение")
-            await cleaner(bot=bot, chat_id=message.chat.id, messages=[attr_error.message_id], timeout=10)
+            await cleaner(
+                bot=bot,
+                chat_id=message.chat.id,
+                messages=[message.message_id, attr_error.message_id],
+                timeout=10
+            )
     except TelegramBadRequest as BadRequest:
         print(BadRequest)
     except TelegramNotFound as NotFound:

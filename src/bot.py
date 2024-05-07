@@ -23,7 +23,7 @@ async def main():
     session = AiohttpSession(
         api=TelegramAPIServer.from_base('http://localhost:8081')
     )
-    bot = Bot(token=os.environ['BOT_TOKEN'])
+    bot = Bot(token=os.getenv("BOT_TOKEN"))
     dp.startup.register(on_startup)
     dp.include_routers(
         admins.admin_command_router,
