@@ -1,19 +1,29 @@
 import time
 
 from aiogram import Bot, Router, types
-from aiogram.filters import Command, CommandObject
+from aiogram.filters import BaseFilter, Command, CommandObject
 from aiogram.methods.restrict_chat_member import ChatPermissions
 from aiogram.exceptions import TelegramBadRequest, TelegramNotFound
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.formatting import Text, Bold, TextMention
 
-from cleaner import cleaner
+from utils import db
+from utils.cleaner import cleaner
 
 
 admin_command_router = Router()
 
 
-@admin_command_router.message(Command("ban"))
+class AdminFilter(BaseFilter):
+    async def __call__(self, message: types.Message, bot: Bot):
+        access = await db.get_admins(user_id=message.from_user.id)
+        if access:
+            return True
+        msg = await message.reply("У вас нет доступа к этой команде.")
+        await cleaner(bot=bot, chat_id=message.chat.id, messages=[msg.message_id], timeout=5)
+
+
+@admin_command_router.message(Command("ban"), AdminFilter())
 async def ban_command(message: types.Message, bot: Bot, command: CommandObject) -> None:
     try:
         reason = command.args if command.args else "Не указана"
@@ -61,12 +71,12 @@ async def ban_command(message: types.Message, bot: Bot, command: CommandObject) 
         print(NotFound)
 
 
-@admin_command_router.message(Command("mute"))
-async def mute_command(message: types.Message, bot: Bot, command: CommandObject):
+@admin_command_router.message(Command("mute"), AdminFilter())
+async def mute_command(message: types.Message, bot: Bot, command: CommandObject) -> None:
     try:
         mute_time = int(command.args) if command.args else 5
         mute_time = mute_time if mute_time > 1 else 1
-        mute_time = mute_time if mute_time < 300 else 300
+        mute_time = mute_time if mute_time < 360 else 360
         await bot.restrict_chat_member(
             chat_id=message.chat.id,
             user_id=message.reply_to_message.from_user.id,
@@ -101,12 +111,12 @@ async def mute_command(message: types.Message, bot: Bot, command: CommandObject)
         print(BadRequest)
 
 
-@admin_command_router.message(Command("nomedia"))
-async def mute_command(message: types.Message, bot: Bot, command: CommandObject):
+@admin_command_router.message(Command("nomedia"), AdminFilter())
+async def nomedia_command(message: types.Message, bot: Bot, command: CommandObject) -> None:
     try:
         mute_time = int(command.args) if command.args else 5
         mute_time = mute_time if mute_time > 1 else 1
-        mute_time = mute_time if mute_time < 300 else 300
+        mute_time = mute_time if mute_time < 360 else 360
         await bot.restrict_chat_member(
             chat_id=message.chat.id,
             user_id=message.reply_to_message.from_user.id,
