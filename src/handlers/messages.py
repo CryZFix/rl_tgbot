@@ -3,6 +3,7 @@ import re
 from aiogram import Bot, F, Router, types
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.formatting import Bold, Text
 from utils import db, book_parser
 
 message_router = Router()
@@ -20,6 +21,19 @@ async def message_counter(message: types.Message, bot: Bot):
             await message.reply_sticker(
                 sticker="CAACAgIAAx0CVfdAjQABCB_AZaWNXTyKYRFhdX1RxReAaznMw5kAAjJEAAJ4u8FIYBju0SwbEPMzBA"
             )
+        if "фанфик" in cleaned_message:
+            text_message = Text(
+                Bold("Отрицание"), " — ты убеждаешь себя, что тебя НЕ интересуют фанфики.\n",
+                Bold("Злость"), " — ты ненавидишь фанфики и плюёшься только при их упоминании.\n",
+                Bold("Торг"), " — ты пытаешься узнать, как можно избавиться от фанфиков в ленте, "
+                "и даже просишь подумать об этом администрацию.\n",
+                Bold("Депрессия"), " — внутри себя ты испытываешь пустоту, осознавая, "
+                "что избавиться от фанфиков не получится.\n",
+                Bold("Признание"), " — ты окончательно принимаешь существование фиков и "
+                "не считаешь зазорным их читать.\nfeat. ", Bold("Циркуль")
+
+            )
+            await message.reply(**text_message.as_kwargs())
 
         # book_pattern = r"https://[\w.]+\/book\/\d+"
         # match = re.search(book_pattern, message.text)

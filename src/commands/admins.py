@@ -29,7 +29,12 @@ class AdminFilter(BaseFilter):
         if access:
             return True
         msg = await message.reply("У вас нет доступа к этой команде.")
-        await cleaner(bot=bot, chat_id=message.chat.id, messages=[msg.message_id], timeout=5)
+        await cleaner(
+            bot=bot,
+            chat_id=message.chat.id,
+            messages=[message.message_id, msg.message_id],
+            timeout=5
+        )
 
 
 @admin_command_router.message(Command("ban"), AdminFilter())
@@ -71,6 +76,7 @@ async def ban_command(message: types.Message, bot: Bot, command: CommandObject) 
             timeout=0
         )
     except TelegramBadRequest as BadRequest:
+        await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
         print(BadRequest)
     except TelegramNotFound as NotFound:
         print(NotFound)
@@ -102,6 +108,7 @@ async def mute_command(message: types.Message, bot: Bot, command: CommandObject)
         await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
     except TelegramBadRequest as BadRequest:
+        await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
         print(BadRequest)
 
 
@@ -134,4 +141,5 @@ async def nomedia_command(message: types.Message, bot: Bot, command: CommandObje
         await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
     except TelegramBadRequest as BadRequest:
+        await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
         print(BadRequest)

@@ -1,6 +1,7 @@
 import os
 
 from aiogram import Bot
+from aiogram.utils.formatting import Bold, Text
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from utils import db
 
@@ -21,18 +22,18 @@ async def initialize(bot: Bot) -> None:
 async def send_daily(bot: Bot):
     result = await db.get_messages_stat(period="day")
 
-    text_message = "Топ 10 балоболов чата за сегодня\n\n"
+    text_message = Text("Топ 10 балоболов чата за сегодня\n\n")
     for user in result:
-        text_message += f"<b>{user[1]}</b>, сообщений: {user[2]}\n"
+        text_message += Text(Bold(user[1]), " сообщений: ", user[2], "\n")
 
-    await bot.send_message(chat_id=TG_GROUP_ID, text=text_message)
+    await bot.send_message(chat_id=TG_GROUP_ID, **text_message.as_kwargs())
 
 
 async def send_weekly(bot: Bot):
     result = await db.get_messages_stat(period="week")
 
-    text_message = "Топ 10 балоболов чата за неделю\n\n"
+    text_message = Text("Топ 10 балоболов чата за неделю\n\n")
     for user in result:
-        text_message += f"<b>{user[1]}</b>, сообщений: {user[2]}\n"
+        text_message += Text(Bold(user[1]), " сообщений: ", user[2], "\n")
 
-    await bot.send_message(chat_id=TG_GROUP_ID, text=text_message)
+    await bot.send_message(chat_id=TG_GROUP_ID, **text_message.as_kwargs())
