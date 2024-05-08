@@ -17,6 +17,15 @@ admin_command_router = Router()
 class AdminFilter(BaseFilter):
     async def __call__(self, message: types.Message, bot: Bot):
         access = await db.get_admins(user_id=message.from_user.id)
+        if not message.reply_to_message:
+            attr_error = await message.reply(text="Команда должна быть вызвана в ответ на сообщение")
+            await cleaner(
+                bot=bot,
+                chat_id=message.chat.id,
+                messages=[message.message_id, attr_error.message_id],
+                timeout=10
+            )
+            return
         if access:
             return True
         msg = await message.reply("У вас нет доступа к этой команде.")
@@ -61,15 +70,6 @@ async def ban_command(message: types.Message, bot: Bot, command: CommandObject) 
             messages=[message.message_id, message.reply_to_message.message_id],
             timeout=0
         )
-    except AttributeError:
-        if not message.reply_to_message:
-            attr_error = await message.reply(text="Команда должна быть вызвана в ответ на сообщение")
-            await cleaner(
-                bot=bot,
-                chat_id=message.chat.id,
-                messages=[message.message_id, attr_error.message_id],
-                timeout=10
-            )
     except TelegramBadRequest as BadRequest:
         print(BadRequest)
     except TelegramNotFound as NotFound:
@@ -101,17 +101,6 @@ async def mute_command(message: types.Message, bot: Bot, command: CommandObject)
         )
         await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
-    except AttributeError as AttrError:
-        if not message.reply_to_message:
-            attr_error = await message.reply(text="Команда должна быть вызвана в ответ на сообщение")
-            await cleaner(
-                bot=bot,
-                chat_id=message.chat.id,
-                messages=[message.message_id, attr_error.message_id],
-                timeout=10
-            )
-        else:
-            print(AttrError)
     except TelegramBadRequest as BadRequest:
         print(BadRequest)
 
@@ -144,16 +133,5 @@ async def nomedia_command(message: types.Message, bot: Bot, command: CommandObje
         )
         await message.answer(**content.as_kwargs(), disable_web_page_preview=True)
         await cleaner(bot=bot, chat_id=message.chat.id, messages=[message.message_id], timeout=0)
-    except AttributeError as AttrError:
-        if not message.reply_to_message:
-            attr_error = await message.reply(text="Команда должна быть вызвана в ответ на сообщение")
-            await cleaner(
-                bot=bot,
-                chat_id=message.chat.id,
-                messages=[message.message_id, attr_error.message_id],
-                timeout=10
-            )
-        else:
-            print(AttrError)
     except TelegramBadRequest as BadRequest:
         print(BadRequest)
