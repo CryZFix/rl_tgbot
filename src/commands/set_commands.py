@@ -19,7 +19,7 @@ async def set_chat_users_commands(bot: Bot):
         commands=[
             BotCommand(command="rules", description="Отправить правила чата"),
             BotCommand(command="balabol", description="Топ говорливых бабок"),
-            BotCommand(commands="ai", description="Задать вопрос боту"),
+            BotCommand(command="ai", description="Задать вопрос боту"),
         ],
         scope=BotCommandScopeAllGroupChats()
     )
