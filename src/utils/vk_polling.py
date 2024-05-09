@@ -3,6 +3,7 @@ import json
 import os
 import re
 
+from aiogram import Bot
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from bs4 import BeautifulSoup
@@ -109,7 +110,7 @@ class VkPolling:
         tg_post["vk_post_id"] = response["id"]
         await self.tg_repost(tg_post=tg_post, bot=self.bot)
 
-    async def tg_repost(self, tg_post, bot):
+    async def tg_repost(self, tg_post, bot: Bot):
         has_media = False
         text_message = tg_post["text"]
 
@@ -152,7 +153,8 @@ class VkPolling:
                 chat_id=self.tg_group_id,
                 photo=tg_post["image"],
                 caption=text_message,
-                reply_markup=keyboard
+                reply_markup=keyboard,
+                parse_mode="HTML"
             )
         elif chaps_on_text >= 1024 and has_media:
             await bot.send_photo(
@@ -162,13 +164,15 @@ class VkPolling:
             await bot.send_message(chat_id=self.tg_group_id,
                                    text=text_message,
                                    disable_web_page_preview=True,
-                                   reply_markup=keyboard
+                                   reply_markup=keyboard,
+                                   parse_mode="HTML"
                                    )
         else:
             await bot.send_message(chat_id=self.tg_group_id,
                                    text=text_message,
                                    disable_web_page_preview=True,
-                                   reply_markup=keyboard
+                                   reply_markup=keyboard,
+                                   parse_mode="HTML"
                                    )
 
 
