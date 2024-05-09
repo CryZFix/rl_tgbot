@@ -4,10 +4,20 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.utils.formatting import Text, Bold, TextMention
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 
+from utils import ai
 from utils.cleaner import cleaner
 
 
 user_command_router = Router()
+
+
+@user_command_router.message(Command("ai"))
+async def ai_answer(message: types.Message) -> None:
+    try:
+        answer = await ai.answer_ai(message.text)
+        await message.reply(answer)
+    except TelegramBadRequest:
+        pass
 
 
 @user_command_router.message(Command("rules", "правила"))

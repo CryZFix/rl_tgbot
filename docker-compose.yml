@@ -12,6 +12,7 @@ services:
       VK_GROUP_ID: ${VK_GROUP_ID}
       TG_API: ${TG_API}
       TG_GROUP_ID: ${TG_GROUP_ID}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       TERM: xterm-256color
       COLORTERM: truecolor
     volumes:
