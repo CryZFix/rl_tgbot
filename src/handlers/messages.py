@@ -46,13 +46,13 @@ async def message_counter(message: types.Message, bot: Bot):
                     for tag in response['tags']:
                         tags += f"#{tag.replace(' ', '_')} "
                     text_message = Text(
-                                    response['novel_title'], "\n",
-                                    Bold("Статус книги: "), response['novel_translate_status'], "\n",
+                                    response["novel_title"], "\n",
+                                    Bold("Статус книги: "), response["novel_translate_status"], "\n",
                                     Bold("Жанры: "), tags, "\n",
-                                    Bold("Произведение: "), response['rating'], "\n",
-                                    Bold("Качество перевода: "), response['quality'], "\n",
-                                    Bold("Всего глав: "), response['all_chapters'],
-                                    " из них ", response['free_chapters'], " бесплатных"
+                                    Bold("Произведение: "), response["rating"], "\n",
+                                    Bold("Качество перевода: "), response["quality"], "\n",
+                                    Bold("Всего глав: "), response["all_chapters"],
+                                    " из них ", response["free_chapters"], " бесплатных"
                                 )
                     button = InlineKeyboardMarkup(
                         inline_keyboard=[
