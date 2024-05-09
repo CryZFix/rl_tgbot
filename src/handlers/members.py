@@ -1,6 +1,3 @@
-import asyncio
-import os
-
 from aiogram import Bot, Router, types
 from aiogram.filters import IS_ADMIN, IS_MEMBER, IS_NOT_MEMBER, ChatMemberUpdatedFilter
 from aiogram.utils.keyboard import InlineKeyboardButton, InlineKeyboardMarkup

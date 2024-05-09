@@ -8,7 +8,7 @@ from aiogram.methods import DeleteWebhook
 
 from commands import admins, set_commands, users
 from handlers import callbacks, messages, members
-from utils import scheduler, db
+from utils import scheduler, db, vk_polling
 
 
 async def on_startup(bot: Bot):
@@ -35,6 +35,7 @@ async def main():
     )
 
     await bot(DeleteWebhook(drop_pending_updates=True))
+    asyncio.create_task(vk_polling.VkPolling(bot).start_polling())
     asyncio.create_task(dp.start_polling(bot))
     while True:
         await asyncio.sleep(1)
