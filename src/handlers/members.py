@@ -55,7 +55,7 @@ async def new_member(event: types.ChatMemberUpdated, bot: Bot):
 async def left_member(event: types.ChatMemberUpdated, bot: Bot):
     text_message = Text(
         "К сожалению, пользователь \"",
-        Bold(event.from_user.full_name),
+        Bold(event.old_chat_member.user.full_name),
         "\" покидает нас.",
     )
     msg = await event.answer(**text_message.as_kwargs(), disable_web_page_preview=True, disable_notification=True)
