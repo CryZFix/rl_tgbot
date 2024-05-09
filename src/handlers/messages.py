@@ -36,7 +36,7 @@ async def message_counter(message: types.Message, bot: Bot):
             await message.reply(**text_message.as_kwargs())
 
         book_pattern = r"https://[\w.]+\/book\/\d+"
-        books = re.search(book_pattern, message.text)
+        books = re.findall(book_pattern, message.text)
         if books:
             for book in books:
                 parser = book_parser.BookParser()
@@ -45,19 +45,20 @@ async def message_counter(message: types.Message, bot: Bot):
                     tags = ""
                     for tag in response['tags']:
                         tags += f"#{tag.replace(' ', '_')} "
-                    text_message = (
-                                    f"{response['novel_title']}\n"
-                                    f"<b>Статус книги:</b> {response['novel_translate_status']}\n"
-                                    f"<b>Жанры:</b> {tags}\n"
-                                    f"<b>Произведение:</b> {response['rating']}\n"
-                                    f"<b>Качество перевода:</b> {response['quality']}\n"
-                                    f"<b>Всего глав:</b> {response['all_chapters']}, из них {response['free_chapters']} бесплатных"
-                    )
+                    text_message = Text(
+                                    response['novel_title'], "\n",
+                                    Bold("Статус книги: "), response['novel_translate_status'], "\n",
+                                    Bold("Жанры: "), tags, "\n",
+                                    Bold("Произведение: "), response['rating'], "\n",
+                                    Bold("Качество перевода: "), response['quality'], "\n",
+                                    Bold("Всего глав: "), response['all_chapters'],
+                                    " из них ", response['free_chapters'], " бесплатных"
+                                )
                     button = InlineKeyboardMarkup(
                         inline_keyboard=[
                             [InlineKeyboardButton(text="Открыть книгу на сайте", url=book)]
                         ]
                     )
-                    await message.reply(text=text_message, reply_markup=button)
+                    await message.reply(**text_message.as_kwargs(), reply_markup=button)
     except TelegramBadRequest:
         pass
