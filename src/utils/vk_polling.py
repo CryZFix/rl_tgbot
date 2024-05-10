@@ -13,6 +13,8 @@ from datetime import datetime
 class VkPolling:
     def __init__(self, bot):
         self.session = None
+        self.adult = None
+        self.author = None
         self.bot = bot
         self.tg_group_id = os.getenv("TG_GROUP_ID")
         self.vk_api_version = os.getenv("VK_API_VERSION")
@@ -127,7 +129,7 @@ class VkPolling:
                     [button_to_book]
                 ]
             )
-            rate, quality = await parse_rate(url=match.group())
+            rate, quality, self.adult, self.author = await parse_rate(url=match.group())
             if rate and quality:
                 text_message += "\n\n\nПроизведение: {}\nКачество перевода: {}".format(rate, quality)
             else:
@@ -146,6 +148,14 @@ class VkPolling:
             self.vk_group_id,
             tg_post["vk_post_id"]
         )
+
+        if self.adult:
+            text_message += "  🔞 Возрастное ограничение"
+
+        if self.author:
+            text_message += "  ✍️ Авторское"
+        else:
+            text_message += "  📑 Перевод"
 
         chaps_on_text = len(text_message)
         if chaps_on_text < 1024 and has_media:
@@ -192,11 +202,13 @@ async def parse_rate(url):
         rate = soup.select("div.rating-block")
         rating = rate[0].text.strip()
         quality = rate[1].text.strip()
+        adult = soup.select_one(".adult-icon")
+        author = soup.select_one("div p.cat a:-soup-contains('Автор')")
         await session.close()
-        return rating, quality
+        return rating, quality, adult, author
     except TimeoutError:
         await session.close()
-        return None, None
+        return None, None, None, None
     except AttributeError:
         await session.close()
-        return None, None
+        return None, None, None, None
