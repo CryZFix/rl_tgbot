@@ -17,3 +17,4 @@ A simple bot for moderation and statistics of chat messages.
 `VK_GROUP_ID=PUT_HERE_VK_GROUP_ID`<br>
 `TG_API="PUT_HERE_BOT_TOKEN"`<br>
 `TG_GROUP_ID=PUT_HERE_TG_GROUP_ID` - Needed for working scheduler<br>
+`OPENAI_API_KEY="PUT_HERE_OPENAI_TOKEN"`<br>
