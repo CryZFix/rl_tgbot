@@ -84,7 +84,9 @@ class VkPolling:
                         if response["post_type"] == "post":
                             await self.new_post_handler(response=response)
                 except IndexError:
-                    pass
+                    if response["inner_type"] == "wall_post_new" and\
+                            response["post_type"] == "post":
+                        await self.new_post_handler(response=response)
                     print(datetime.now(), "IndexError to get updates")
                     print("\n\n", response)
                     print(IndexError)
